@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"container/list"	
 )
+//TODO : change from static variable to local variable for consumption
 var p int = 0;
 // var input int = 123;
 // var input string = "{{1}, 2, 3}";
@@ -11,9 +12,11 @@ var array []int;
 
 var array_string [] string;
 
+var temp_input string = "hello : {1}"
+
 func main() {
 
-	// JSON : (number, string, array[JSON])
+	// value : (number, string, array[value])
 	//test num checking
 	// consume_num()
 	// // fmt.Printf("p : %d", p);
@@ -36,16 +39,20 @@ func main() {
 // 	if is_array() {
 // 		consume_bracket()
 // 		//require list of comma seperated tokens ignoring strings for 
-// 		for is_json() {
-// 			consume_json()
+// 		for is_value() {
+// 			consume_value()
 // 		}
 // 		consume_bracket()
 // 	}
 // }
 
 
+// func is_json
+
+
+
 func is_array(input string, start_position int) bool {
-	//[(JSON ,)*]
+	//[(value ,)*]
 	//starts with a bracket
 	pos := start_position
 	if(input[pos] != '[') {
@@ -78,10 +85,10 @@ func is_array(input string, start_position int) bool {
 		return false;
 	}
 	pos++;
-	for is_json(input, pos){
+	for is_value(input, pos){
 
 		//need a function to skip based on the token amount
-		length := json_length(input, pos)
+		length := value_length(input, pos)
 		pos += length
 		if is_comma(input, pos) {
 			//then keep iterating
@@ -96,7 +103,7 @@ func is_array(input string, start_position int) bool {
 	}
 	
 	return true;
-	//has 0 - infinite valid json in between
+	//has 0 - infinite valid value in between
 
 }
 
@@ -162,7 +169,7 @@ func string_length(input string, start_position int) int {
 	return temp - start_position + 1;
 }
 
-func json_length(input string, pos int) int {
+func value_length(input string, pos int) int {
 	var result int = 0;
 	if(is_string(input, pos)){
 		result = string_length(input, pos);
@@ -174,7 +181,7 @@ func json_length(input string, pos int) int {
 	return result;
 }
 
-func is_json(input string, pos int) bool {
+func is_value(input string, pos int) bool {
   var result = is_num(input, pos) || is_string(input, pos) || is_array(input, pos) 
 	return result;
 }
