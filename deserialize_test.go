@@ -14,6 +14,57 @@ import (
 // 	}
 // }
 
+func TestIsJsonSimple(t *testing.T) {
+	input := "{\"hello\":[12, \"123\"]}";
+	want := true
+	if is_json(input, 0) != want {
+		t.Errorf("is_json(), wanted true for input %q", input)
+	}
+}
+
+func TestKeyValueLength(t *testing.T) {
+	input := "\"hello\":[12, \"123\"]";
+	want := 19
+	if val := k_v_pair_length(input, 0); val != want {
+		t.Errorf("k_v_pair_length(), wanted 18 for input %q, got %d instead", input, val)
+	}
+}
+
+
+func TestIsKeyValuePairFailingMissingColon(t *testing.T) {
+	input := "\"hello\"[12, \"123\"]";
+	want := false
+	if is_k_v_pair(input, 0) != want {
+		t.Errorf("is_k_v_pair(), want false for input %q", input)
+	}
+}
+
+func TestIsKeyValuePairArrayValue(t *testing.T) {
+	input := "\"hello\":[12, \"123\"]";
+	want := true
+	if is_k_v_pair(input, 0) != want {
+		t.Errorf("is_k_v_pair(), want true for input %q", input)
+	}
+}
+
+
+func TestIsKeyValuePairSimple(t *testing.T) {
+	input := "\"hello\":\"12\"";
+	want := true
+	if is_k_v_pair(input, 0) != want {
+		t.Errorf("is_k_v_pair(), want true for input %q", input)
+	}
+}
+
+func TestValueLength(t *testing.T) {
+	input:="[12, \"3\"]"
+	want:= 9
+	if val := value_length(input, 0); val != want {
+		t.Errorf("is_k_v_pair(), wanted %d for input %q, got %d instead", want, input, val)
+
+	}
+}
+
 
 
 func TestIsValueFailingMisingEndBracket(t *testing.T) {

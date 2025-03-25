@@ -12,7 +12,6 @@ var array []int;
 
 var array_string [] string;
 
-var temp_input string = "hello : {1}"
 
 func main() {
 
@@ -35,19 +34,62 @@ func main() {
 	fmt.Print(is_array("[[1]]", 0), "\n"); 
 }
 
-// func consume_array() {
-// 	if is_array() {
-// 		consume_bracket()
-// 		//require list of comma seperated tokens ignoring strings for 
-// 		for is_value() {
-// 			consume_value()
-// 		}
-// 		consume_bracket()
-// 	}
-// }
 
 
-// func is_json
+func is_json (input string, pos int) bool {
+	if(!is_start_json_bracket(input, pos)) {
+		return false;
+	}
+	pos++
+	//0 - infinite key value pairs
+	for(is_k_v_pair(input, pos)) {
+		pos += k_v_pair_length(input, pos);
+		if(is_comma(input, pos)) {
+			pos++;
+		}else {
+			break;
+		}
+	}
+	
+	if(!is_end_json_bracket(input, pos)){
+		return false;
+	}
+	return true;
+
+}
+
+func is_k_v_pair(input string, pos int) bool {
+	if(!is_key(input, pos)){
+		return false;
+	}
+	pos += key_length(input, pos)
+	if(!is_colon(input, pos)){
+		return false;
+	}
+	pos++
+	if(!is_value(input, pos)) {
+		return false;
+	}
+	return true;
+}
+
+func is_colon(input string, pos int) bool {
+	return input[pos] == ':';
+}
+
+func k_v_pair_length(input string, pos int) int {
+	key_length := key_length(input, pos);
+	value_length := value_length(input, pos + key_length + 1);
+	return key_length + value_length + 1
+}
+
+func is_key(input string, pos int) bool {
+	return is_string(input, pos);
+}
+
+func key_length(input string, pos int) int {
+	return string_length(input, pos);
+}
 
 
 
@@ -94,7 +136,7 @@ func is_array(input string, start_position int) bool {
 			//then keep iterating
 			// start_position++;
 			pos++;
-		} else if is_end_bracket(input, pos){
+		} else if is_end_array_bracket(input, pos){
 			return true;
 		} else{
 			
@@ -113,7 +155,7 @@ func array_length (input string, start_position int) int {
 	for i := start_position; i < len(input); i++ {
 		if(input[i] == '"') {
 			//skip string
-			i += string_length(input, i);
+			i += string_length(input, i) - 1;
 		} else if(input[i] == '[') {
 			stack.PushFront('{');
 		} else if(input[i] == ']') {
@@ -189,7 +231,19 @@ func is_comma(input string, pos int) bool {
 	return input[pos] == ','
 }
 
-func is_end_bracket(input string, pos int) bool {
+func is_start_json_bracket(input string, pos int) bool {
+	return input[pos] == '{'
+}
+
+func is_end_json_bracket(input string, pos int) bool {
+	return input[pos] == '}'
+}
+
+func is_start_array_bracket(input string, pos int) bool {
+	return input[pos] == '['
+}
+
+func is_end_array_bracket(input string, pos int) bool {
 	return input[pos] == ']'
 }
 
@@ -353,16 +407,3 @@ func is_out_of_bounds(input string, pos int) bool {
 
 }
 
-// func deserialize() {
-
-// 	//consume number
-// 	if num {
-// 		return deserialize_num()
-
-// 	} else if string {
-// 		return deserialize_string()
-
-// 	} else if array {
-// 		return deserialize_array()
-// 	}
-// }
