@@ -14,6 +14,32 @@ import (
 // 	}
 // }
 
+
+
+func TestJsonLengthNested(t *testing.T) {
+	input := "{\"hello\":{\"hello2\":123}}"
+	want := 24
+	if val := json_length(input, 0); val != want {
+		t.Errorf("is_json(), wanted %d instead got %d for input %q", want, val, input)
+	}
+}
+
+func TestJsonLengthSimple(t *testing.T) {
+	input := "{\"hello\":[12, \"123\"]}";
+	want := 21
+	if val := json_length(input, 0); val != want {
+		t.Errorf("is_json(), wanted %d instead got %d for input %q", want, val, input)
+	}
+}
+
+func TestIsJsonNested(t *testing.T) {
+	input := "{\"hello\":{\"hello2\":123}}"
+	want:=true
+	if is_json(input, 0) != want {
+		t.Errorf("is_json(), want true for input %q", input)
+	}
+}
+
 func TestIsJsonSimple(t *testing.T) {
 	input := "{\"hello\":[12, \"123\"]}";
 	want := true

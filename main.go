@@ -37,6 +37,34 @@ func main() {
 
 
 func is_json (input string, pos int) bool {
+	//validate that starting brace has a matching ending brace
+	start_position := pos
+	stack := new(list.List);
+	for i := start_position; i < len(input); i++ {
+		if(input[i] == '"') {
+			//skip string
+			i += string_length(input, i) - 1;
+		} else if(input[i] == '{') {
+			stack.PushFront('{');
+		} else if(input[i] == '}') {
+			if(stack.Len() == 0) {
+			
+				return false;
+				//too many right brackets
+			}
+			stack.Remove(stack.Front());
+		}
+		if(stack.Len() == 0) {
+			//this is a valid paranthesis
+			break;
+		}
+	}
+	if(stack.Len() != 0) {
+		//too many left brackets
+	
+		return false;
+	}
+
 	if(!is_start_json_bracket(input, pos)) {
 		return false;
 	}
@@ -71,6 +99,37 @@ func is_k_v_pair(input string, pos int) bool {
 		return false;
 	}
 	return true;
+}
+
+func json_length(input string, pos int) int {
+	start_position := pos
+	temp := start_position
+	stack := new(list.List);
+	for i := start_position; i < len(input); i++ {
+		if(input[i] == '"') {
+			//skip string
+			i += string_length(input, i) - 1;
+		} else if(input[i] == '{') {
+			stack.PushFront('}');
+		} else if(input[i] == '}') {
+			if(stack.Len() == 0) {
+				return -1;
+				//too many right brackets
+			}
+			stack.Remove(stack.Front());
+		}
+		if(stack.Len() == 0) {
+			//this is a valid paranthesis
+			temp = i
+			break;
+		}
+	}
+	if(stack.Len() != 0) {
+		//too many left brackets
+		return -1;
+	}
+	return temp - pos + 1;
+
 }
 
 func is_colon(input string, pos int) bool {
@@ -219,12 +278,14 @@ func value_length(input string, pos int) int {
 		result = array_length(input, pos);
 	} else if (is_num(input, pos)) {
 		result = num_length(input, pos);
+	} else if (is_json(input, pos)){
+		result = json_length(input, pos);
 	}
 	return result;
 }
 
 func is_value(input string, pos int) bool {
-  var result = is_num(input, pos) || is_string(input, pos) || is_array(input, pos) 
+  var result = is_num(input, pos) || is_string(input, pos) || is_array(input, pos) || is_json(input, pos) 
 	return result;
 }
 func is_comma(input string, pos int) bool {
