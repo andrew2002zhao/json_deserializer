@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"container/list"	
+	"strings"
 )
 //TODO : change from static variable to local variable for consumption
 var p int = 0;
@@ -38,6 +39,7 @@ func main() {
 
 func is_json (input string, pos int) bool {
 	//validate that starting brace has a matching ending brace
+	input = eliminate_whitespace(input);
 	start_position := pos
 	stack := new(list.List);
 	for i := start_position; i < len(input); i++ {
@@ -102,6 +104,7 @@ func is_k_v_pair(input string, pos int) bool {
 }
 
 func json_length(input string, pos int) int {
+	input = eliminate_whitespace(input);
 	start_position := pos
 	temp := start_position
 	stack := new(list.List);
@@ -285,7 +288,7 @@ func value_length(input string, pos int) int {
 }
 
 func is_value(input string, pos int) bool {
-  var result = is_num(input, pos) || is_string(input, pos) || is_array(input, pos) || is_json(input, pos) 
+  var result = is_num(input, pos)|| is_string(input, pos) || is_array(input, pos) || is_json(input, pos) 
 	return result;
 }
 func is_comma(input string, pos int) bool {
@@ -427,8 +430,14 @@ func is_num(input string, pos int) bool {
 		return false;
 	}
 	pos++;
-	for(is_0_9_digit(input, pos)){
-		pos++
+	for{
+		if(is_0_9_digit(input, pos)){
+			pos++
+		} else if(is_char(input, pos)){
+			return false;
+		} else {
+			break;
+		}
 	}
 	return true;
 }
@@ -468,3 +477,6 @@ func is_out_of_bounds(input string, pos int) bool {
 
 }
 
+func eliminate_whitespace(input string) string {
+	return strings.ReplaceAll(input, " ", "");
+}
